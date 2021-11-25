@@ -2,6 +2,7 @@
 
 import abc, argparse, string
 
+
 class CharClass(abc.ABC):
     """A class of characters; an arbitrary grouping of strings."""
 
@@ -33,8 +34,10 @@ class CharClass(abc.ABC):
         """Enabled or disabled this character class, by noting such in the internal state variable."""
         self._state = new_state
 
+
 class AlphaLower(CharClass):
     """Alphabetical characters, in lowercase."""
+
     def default_state(self) -> bool:
         return True
 
@@ -44,6 +47,7 @@ class AlphaLower(CharClass):
     @property
     def name(self) -> str:
         return "Lowercase Alphabetic"
+
 
 class AlphaUpper(CharClass):
     def default_state(self) -> bool:
@@ -56,8 +60,10 @@ class AlphaUpper(CharClass):
     def name(self) -> str:
         return "Uppercase Alphabetic"
 
+
 class NumberDigit(CharClass):
     """Numerical digits."""
+
     def default_state(self) -> bool:
         return True
 
@@ -68,8 +74,10 @@ class NumberDigit(CharClass):
     def name(self) -> bool:
         return "Numerical Digits"
 
+
 class Symbol(CharClass):
     """Symbolic Characters."""
+
     def default_state(self) -> bool:
         return False
 
@@ -80,6 +88,7 @@ class Symbol(CharClass):
     def name(self) -> str:
         return "Symbols"
 
+
 class ClassMgr:
     def __init__(self):
         self._char_classes = []
@@ -89,7 +98,9 @@ class ClassMgr:
 
     def get_all_chars(self) -> str:
         """Gets all characters, from all registered character classes."""
-        return ''.join(char_cls.get_chars() for char_cls in self._char_classes if char_cls.state)
+        return "".join(
+            char_cls.get_chars() for char_cls in self._char_classes if char_cls.state
+        )
 
     @classmethod
     def default(cls):
@@ -100,21 +111,33 @@ class ClassMgr:
         default.register(Symbol())
         return default
 
+
 char_classes = {
-        'lower': AlphaLower(),
-        'upper': AlphaUpper(),
-        'digit': NumberDigit(),
-        'symbol': Symbol()
+    "lower": AlphaLower(),
+    "upper": AlphaUpper(),
+    "digit": NumberDigit(),
+    "symbol": Symbol(),
 }
 
+
 def parser():
-    par = argparse.ArgumentParser(description='Generates a random, secure password string.')
+    par = argparse.ArgumentParser(
+        description="Generates a random, secure password string."
+    )
     for char_cls in char_classes:
         short_id = f"-{char_cls[0]}"
         long_id = f"--{char_cls}"
-        par.add_argument(short_id, long_id, action='store_true', dest=char_cls, default=char_classes[char_cls].state, help=f"Enable the Character Class: {char_classes[char_cls].name}.")
+        par.add_argument(
+            short_id,
+            long_id,
+            action="store_true",
+            dest=char_cls,
+            default=char_classes[char_cls].state,
+            help=f"Enable the Character Class: {char_classes[char_cls].name}.",
+        )
 
     return par
+
 
 def main():
     args = parser().parse_args()
@@ -124,5 +147,6 @@ def main():
             mgr.register(char_classes[name])
     print(mgr.get_all_chars())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
